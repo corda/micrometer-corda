@@ -38,13 +38,6 @@ pipeline{
             }
         }
 
-        stage('Check out') {
-            steps {
-                checkout([$class: 'GitSCM', branches: [[name: "*/${params.CSDE_BRANCH}"]], extensions: [],
-                    userRemoteConfigs: [[credentialsId: 'corda-jenkins-ci02', url: 'https://github.com/corda/micrometer-corda.git']]])
-            }
-        }
-
         stage('Build') {
             steps {
                 sh './gradlew assemble'
