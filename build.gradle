@@ -42,7 +42,7 @@ apply plugin: 'io.github.gradle-nexus.publish-plugin'
 apply from: 'dependencies.gradle'
 
 allprojects {
-    group = 'io.micrometer'
+    group = 'net.corda.micrometer'
     ext.'release.stage' = releaseStage ?: 'SNAPSHOT'
 
     afterEvaluate { project -> println "I'm configuring $project.name with version $project.version" }
