@@ -27,10 +27,6 @@ pipeline{
         timestamps()
     }
 
-    parameters {
-        string(name: 'BRANCH_TO_CHECKOUT', defaultValue: 'release/corda-5-beta-1', description: 'Branch of CSDE to check out, defaults to release branch')
-    }
-
     stages {
         stage('Prep') {
             steps { // remove any cached items if we end up on same VM
