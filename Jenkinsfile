@@ -18,6 +18,8 @@ pipeline{
 
     // purposely excluding artifactory access as we are replicating a non r3 user, setting grade home in work space so we can delete it each run
     environment {
+        GRADLE_USER_HOME = "${WORKSPACE}"
+        GRADLE_PERFORMANCE_TUNING = "--max-workers=4 --parallel "
     }
 
     options {
