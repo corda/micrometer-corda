@@ -24,7 +24,7 @@ pipeline{
     // purposely excluding artifactory access as we are replicating a non r3 user, setting grade home in work space so we can delete it each run
     environment {
         GRADLE_USER_HOME = "${WORKSPACE}"
-        CORDA_PUBLISH_REPOSITORY_KEY = "${gitUtils.isReleaseTag() 'corda-dependecies-dev' : 'corda-dependecies-dev'}"
+        CORDA_PUBLISH_REPOSITORY_KEY = "${gitUtils.isReleaseTag() ? 'corda-dependecies-dev' : 'corda-dependecies-dev'}"
         CORDA_ARTIFACTORY_PASSWORD = "${env.ARTIFACTORY_CREDENTIALS_PSW}"
         CORDA_ARTIFACTORY_USERNAME = "${env.ARTIFACTORY_CREDENTIALS_USR}"
         ARTIFACTORY_CREDENTIALS = credentials('artifactory-credentials')
