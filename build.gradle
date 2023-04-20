@@ -1,9 +1,9 @@
 buildscript {
     ext.javaLanguageVersion = JavaLanguageVersion.of(JavaVersion.current().isJava11Compatible() ? JavaVersion.current().getMajorVersion() : 17)
     ext.javaTargetVersion = JavaVersion.VERSION_1_8
-    dependencyLocking {
-        lockAllConfigurations()
-    }
+    // dependencyLocking {
+    //     lockAllConfigurations()
+    // }
 
     repositories {
         mavenCentral()
@@ -32,11 +32,15 @@ buildscript {
 
     configurations.classpath.resolutionStrategy.cacheDynamicVersionsFor 0, 'minutes'
 }
+plugins {
+       id 'com.r3.internal.gradle.plugins.r3Publish' apply false
+}
 
 // TODO: remove this hack, see: https://github.com/nebula-plugins/nebula-release-plugin/issues/213
 def releaseStage = findProperty('release.stage')
 apply plugin: 'com.netflix.nebula.release'
 release.defaultVersionStrategy = nebula.plugin.release.git.opinion.Strategies.SNAPSHOT
+
 
 apply plugin: 'io.github.gradle-nexus.publish-plugin'
 apply from: 'dependencies.gradle'
@@ -62,6 +66,7 @@ subprojects {
         apply plugin: 'com.github.hierynomus.license'
         apply plugin: 'checkstyle'
         apply plugin: 'io.spring.nohttp'
+        apply plugin: 'com.r3.internal.gradle.plugins.r3Publish'
 
         java {
             // It is more idiomatic to define different features for different sets of optional
@@ -264,9 +269,9 @@ subprojects {
         }
     }
 
-    dependencyLocking {
-        lockAllConfigurations()
-    }
+    // dependencyLocking {
+    //     lockAllConfigurations()
+    // }
 
     tasks.register('resolveAndLockAll') {
         description = 'Resolves dependencies of all configurations and writes them into the lock file.'
