@@ -1,10 +1,15 @@
 #! groovy
-import groovy.transform.Field
-
 @Library('corda-shared-build-pipeline-steps@5.0.1') _
+
+import groovy.transform.Field
+import com.r3.build.utils.GitUtils
+
 
 @Field
 String mavenLocal = 'tmp/mavenlocal'
+
+@Field
+GitUtils gitUtils = new GitUtils(this)
 
 pipeline{
     agent {
@@ -19,7 +24,7 @@ pipeline{
     // purposely excluding artifactory access as we are replicating a non r3 user, setting grade home in work space so we can delete it each run
     environment {
         GRADLE_USER_HOME = "${WORKSPACE}"
-        CORDA_PUBLISH_REPOSITORY_KEY = "corda-dependecies-dev"
+        CORDA_PUBLISH_REPOSITORY_KEY = "${gitUtils.isReleaseTag() 'corda-dependecies-dev' : 'corda-dependecies-dev'}"
         CORDA_ARTIFACTORY_PASSWORD = "${env.ARTIFACTORY_CREDENTIALS_PSW}"
         CORDA_ARTIFACTORY_USERNAME = "${env.ARTIFACTORY_CREDENTIALS_USR}"
         ARTIFACTORY_CREDENTIALS = credentials('artifactory-credentials')
@@ -31,21 +36,21 @@ pipeline{
     }
 
     stages {
-        stage('Prep') {
-            steps { // remove any cached items if we end up on same VM
-                echo "placeholder"
+        stage('Build') {
+            steps {
+                sh './gradlew assemble --parallel'
             }
         }
 
-        stage('Build') {
+        stage('test') {
             steps {
-                sh './gradlew assemble'
+                sh './gradlew micrometer-osgi-test:test --parallel'
             }
         }
 
         stage('publish') {
             steps {
-                sh './gradlew artifactoryPublish'
+                sh './gradlew artifactoryPublish --parallel'
             }
         }
     }
